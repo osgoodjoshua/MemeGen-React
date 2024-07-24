@@ -7,8 +7,12 @@ interface FlashMessageContextProps {
 
 export const FlashMessageContext = createContext<FlashMessageContextProps | undefined>(undefined);
 
-export const FlashMessageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [message, setMessage] = useState('');
+interface FlashMessageProviderProps {
+  children: ReactNode;
+}
+
+export const FlashMessageProvider: React.FC<FlashMessageProviderProps> = ({ children }) => {
+  const [message, setMessage] = useState<string>('');
 
   return (
     <FlashMessageContext.Provider value={{ message, setMessage }}>

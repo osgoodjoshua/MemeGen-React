@@ -8,7 +8,11 @@ import AppNavbar from './components/Navbar';
 import useMemeData from './custom_hooks/useMemeData';
 
 const App: React.FC = () => {
-  const { allImages, createdMemes} = useMemeData();
+  const { coreImages, createdMemes, setCreatedMemes} = useMemeData();
+
+  const handleMemeCreated = (newMeme: { id: string; url: string; text: string }) => {
+    setCreatedMemes((prevMemes) => [...prevMemes, newMeme]);
+  };
 
   return (
     <div className="App">
@@ -18,7 +22,7 @@ const App: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard memes={createdMemes} />} />
-          <Route path="/create-meme" element={<MemeCreator images={allImages} />} />
+          <Route path="/create-meme" element={<MemeCreator images={coreImages} onMemeCreated={handleMemeCreated} />} />
         </Routes>
       </div>
     </div>

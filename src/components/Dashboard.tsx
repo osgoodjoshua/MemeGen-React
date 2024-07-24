@@ -58,12 +58,11 @@ const Dashboard: React.FC<DashboardProps> = ({ memes: initialMemes }) => {
     }
   };
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (updatedMeme: Meme) => {
     if (flashMessageContext) {
       const { setMessage } = flashMessageContext;
       try {
-        const response = await axiosInstance.get('/captions');
-        setMemes(response.data);
+        setMemes(memes.map((meme) => (meme.id === updatedMeme.id ? updatedMeme : meme)));
         setMessage('Your meme was updated');
       } catch (error) {
         console.error('Error updating meme:', error);
@@ -84,10 +83,7 @@ const Dashboard: React.FC<DashboardProps> = ({ memes: initialMemes }) => {
         <UpdateMemeModal
           meme={{ ...selectedMeme, text: selectedMeme.text || '' }}
           onClose={() => setIsModalOpen(false)}
-          onUpdate={() => {
-            setIsModalOpen(false);
-            handleUpdate();
-          }}
+          onUpdate={handleUpdate}
         />
       )}
     </div>

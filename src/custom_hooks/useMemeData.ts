@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../api/axios';
 
+interface Image {
+  id: string;
+  url: string;
+  is_core: boolean;
+}
+
 interface Meme {
   id: string;
   url: string;
@@ -8,7 +14,7 @@ interface Meme {
 }
 
 const useMemeData = () => {
-  const [allImages, setAllImages] = useState<Meme[]>([]);
+  const [coreImages, setCoreImages] = useState<Image[]>([]);
   const [createdMemes, setCreatedMemes] = useState<Meme[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -16,10 +22,14 @@ const useMemeData = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const imagesResponse = await axiosInstance.get('/images'); // Endpoint to get all images
-        const memesResponse = await axiosInstance.get('/captions'); // Endpoint to get created memes
+        const imagesResponse = await axiosInstance.get('/images');
+        const memesResponse = await axiosInstance.get('/captions');
 
-        setAllImages(imagesResponse.data);
+        const coreImagesData = imagesResponse.data.filter((image: Image) => image.is_core);
+        console.log('Core Images:', coreImagesData); // Debug log
+        console.log('Created Memes:', memesResponse.data); // Debug log
+
+        setCoreImages(coreImagesData);
         setCreatedMemes(memesResponse.data);
         setLoading(false);
       } catch (err) {
@@ -31,7 +41,7 @@ const useMemeData = () => {
     fetchData();
   }, []);
 
-  return { allImages, createdMemes, loading, error };
+  return { coreImages, createdMemes, setCreatedMemes, loading, error };
 };
 
 export default useMemeData;
